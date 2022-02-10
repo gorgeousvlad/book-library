@@ -3,8 +3,8 @@ const fsPromises = require('fs').promises;
 
 const app = expess();
 
-const DB = './db/counter.json';
-const COUNTER_PORT = process.env.COUNTER_PORT || 3000;
+const DB = process.env.DB_FILE || './db/counter.json';
+const PORT = process.env.PORT || 3000;
 
 app.get('/counter/:bookId', async (req, res) => {
     const {bookId} = req.params;
@@ -31,7 +31,7 @@ app.post('/counter/:bookId/incr', async (req, res) => {
         if (file) {
             const curCount = file[bookId];
             file[bookId] = curCount ? curCount + 1 : 1;
-            console.log('FILE', file)
+
             await fsPromises.writeFile(DB, JSON.stringify(file));
 
             return res.json({count: file[bookId]})
@@ -43,6 +43,6 @@ app.post('/counter/:bookId/incr', async (req, res) => {
     }
 });
 
-app.listen(COUNTER_PORT,() => {
-    console.log(`Counter listening on port ${COUNTER_PORT}`)
+app.listen(PORT,() => {
+    console.log(`Counter listening on port ${PORT}`)
 });
