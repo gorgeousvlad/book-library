@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  counter:
+    build: './counter'
+    environment:
+      - PORT=3001
+      - DB_FILE=/var/db/counter.json
+    volumes: 
+      - './counter/db:/var/db'
+    ports:
+      - 3001:3001
+  library:
+    build: './'
+    ports:
+      - 3000:3000
+    environment:
+       - PORT=3000
+       - COUNTER_HOST=counter
+       - COUNTER_PORT=3001
+    links:
+      - counter
+    depends_on:
+      - counter

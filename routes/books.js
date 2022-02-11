@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const {getBookViewsCount} = require('./utils');
 
 const {Book, filterReqFields} = require('../models/Book');
 
@@ -35,15 +36,18 @@ router.post('/create', (req, res) => {
     res.redirect('/books')
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
     const {books} = store;
     const {id} = req.params;
     const idx = books.findIndex(el => el.id === id);
 
     if (idx !== -1) {
+        const count = await getBookViewsCount(idx);
+       
         res.render("book/view", {
             title: `Book`,
-            book: books[idx]
+            book: books[idx],
+            count
         });
     } else {
         res.redirect('/books');
